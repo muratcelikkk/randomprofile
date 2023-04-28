@@ -1,23 +1,36 @@
-import logo from './logo.svg';
-import './App.css';
+import { useState } from "react";
+import "./App.css";
+import axios from "axios";
 
 function App() {
+  const [profileName, setProfileName] = useState("");
+  const [profileCell, setProfileCell] = useState("");
+  const [profileImage, setProfileImage] = useState("");
+  const [profileEmail, setProfileEmail] = useState("");
+
+  const profileData = async () => {
+    try {
+      const res = await axios.get("https://randomuser.me/api");
+      console.log(res);
+      setProfileCell(res.data.results[0].cell);
+      setProfileEmail(res.data.results[0].email);
+      setProfileImage(res.data.results[0].picture.large);
+      setProfileName(
+        `${res.data.results[0].name.first} ${res.data.results[0].name.last}`
+      );
+    } catch (error) {
+      console.log("error");
+    }
+  };
   return (
     <div className="App">
-      <header className="App-header">
-        <img src={logo} className="App-logo" alt="logo" />
-        <p>
-          Edit <code>src/App.js</code> and save to reload.
-        </p>
-        <a
-          className="App-link"
-          href="https://reactjs.org"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Learn React
-        </a>
-      </header>
+      <div className="profileContainer">
+        <img src={profileImage} alt="img" />
+        <h1>{profileName}</h1>
+        <p>{profileEmail}</p>
+        <p>{profileCell}</p>
+        <button onClick={profileData}>click for new profile</button>
+      </div>
     </div>
   );
 }
